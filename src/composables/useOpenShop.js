@@ -12,17 +12,29 @@ export function buildYandexEdaSearchUrl(sweetName) {
   return `https://eda.yandex.ru/search?query=${q}`
 }
 
+export function buildYandexLavkaSearchUrl(sweetName) {
+  const q = encodeURIComponent(sweetName.trim())
+  return `https://lavka.yandex.ru/search?text=${q}`
+}
+
 export function resolveShopUrl(sweet) {
   const custom = normalizeShopUrl(sweet.shopUrl)
   if (custom) return custom
   return buildYandexEdaSearchUrl(sweet.name)
 }
 
-export function openShopLink(sweet) {
-  const url = resolveShopUrl(sweet)
+export function openUrl(url) {
   if (WebApp.openLink) {
     WebApp.openLink(url)
   } else {
     window.open(url, '_blank', 'noopener')
   }
+}
+
+export function openShopLink(sweet) {
+  openUrl(resolveShopUrl(sweet))
+}
+
+export function openLavkaLink(sweet) {
+  openUrl(buildYandexLavkaSearchUrl(sweet.name))
 }

@@ -13,18 +13,27 @@
         {{ tag }}
       </span>
     </div>
-    <button
-      type="button"
-      class="btn btn--order"
-      @click="handleOrder"
-    >
-      🛒 {{ sweet.shopUrl ? 'Перейти к покупке' : 'Найти в Яндекс Еде' }}
-    </button>
+    <div class="card__orders">
+      <button
+        type="button"
+        class="btn btn--order"
+        @click="handleOrder"
+      >
+        🛒 {{ sweet.shopUrl ? 'Купить' : 'Яндекс Еда' }}
+      </button>
+      <button
+        type="button"
+        class="btn btn--order btn--order-alt"
+        @click="handleLavka"
+      >
+        🛒 Лавка
+      </button>
+    </div>
   </article>
 </template>
 
 <script>
-import { openShopLink } from '../composables/useOpenShop.js'
+import { openShopLink, openLavkaLink } from '../composables/useOpenShop.js'
 
 export default {
   name: 'RecommendationCard',
@@ -37,7 +46,12 @@ export default {
     function handleOrder() {
       openShopLink(props.sweet)
     }
-    return { handleOrder }
+
+    function handleLavka() {
+      openLavkaLink(props.sweet)
+    }
+
+    return { handleOrder, handleLavka }
   },
 }
 </script>
@@ -50,17 +64,27 @@ export default {
   margin-bottom: 4px;
 }
 
-.btn--order {
-  width: 100%;
+.card__orders {
+  display: flex;
+  gap: 8px;
   margin-top: 12px;
-  padding: 10px 16px;
+}
+
+.btn--order {
+  flex: 1;
+  padding: 10px 12px;
   border: none;
   border-radius: var(--radius);
   background: rgba(108, 92, 231, 0.15);
   color: var(--tg-button);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.btn--order-alt {
+  background: rgba(46, 204, 113, 0.15);
+  color: #27ae60;
 }
 
 .btn--order:active {
