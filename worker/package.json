@@ -1,0 +1,5 @@
+{
+  "name": "sweet-mood-worker",
+  "private": true,
+  "type": "module"
+}
