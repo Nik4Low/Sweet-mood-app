@@ -15,7 +15,7 @@ export async function tgCall(token, method, body) {
 
 function buildAppUrl(baseUrl, moodQuery) {
   const url = new URL(baseUrl)
-  url.searchParams.set('v', '3')
+  url.searchParams.set('v', '4')
   const text = moodQuery?.trim()
   if (text) {
     url.searchParams.set('inline_mood', text.slice(0, 200))
@@ -23,7 +23,7 @@ function buildAppUrl(baseUrl, moodQuery) {
   return url.toString()
 }
 
-function buildInlineResults(miniAppUrl, query) {
+function buildInlineResults(miniAppUrl, query, botUsername) {
   const moodText = query?.trim() || ''
   const appUrl = buildAppUrl(miniAppUrl, moodText)
   const title = moodText ? '🍰 Сладость по настроению' : '🍰 Подобрать сладость'
@@ -33,6 +33,12 @@ function buildInlineResults(miniAppUrl, query) {
   const messageText = moodText
     ? `🍰 Подберём сладость под настроение: «${moodText.slice(0, 100)}»`
     : '🍰 Подберём сладость под ваше настроение — нажмите кнопку ниже'
+
+  // url-кнопка работает в любом чате; web_app в inline часто требует Main Web App в BotFather
+  const openButton = {
+    text: '✨ Открыть приложение',
+    url: appUrl,
+  }
 
   return [
     {
@@ -44,14 +50,28 @@ function buildInlineResults(miniAppUrl, query) {
         message_text: messageText,
       },
       reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '✨ Открыть приложение',
-              web_app: { url: appUrl },
-            },
-          ],
-        ],
+        inline_keyboard: [[openButton]],
+      },
+    },
+  ]
+}
+
+function buildFallbackResults(miniAppUrl, query) {
+  const moodText = query?.trim() || ''
+  const appUrl = buildAppUrl(miniAppUrl, moodText)
+  const messageText = moodText
+    ? `🍰 Сладость по настроению: ${moodText.slice(0, 100)}\n\n${appUrl}`
+    : `🍰 Подберём сладость по настроению\n\n${appUrl}`
+
+  return [
+    {
+      type: 'article',
+      id: `mood-fallback-${Date.now()}`,
+      title: '🍰 Подобрать сладость',
+      description: moodText || 'Нажмите, чтобы отправить ссылку в чат',
+      input_message_content: {
+        message_text: messageText,
+        disable_web_page_preview: false,
       },
     },
   ]
@@ -60,18 +80,34 @@ function buildInlineResults(miniAppUrl, query) {
 async function handleInlineQuery(inlineQuery, env) {
   const token = env.TELEGRAM_BOT_TOKEN
   const miniAppUrl = env.MINI_APP_URL
+  const botUsername = env.BOT_USERNAME || 'SM4LVBot'
+
   if (!token || !miniAppUrl) {
     console.error('Missing TELEGRAM_BOT_TOKEN or MINI_APP_URL')
     return
   }
 
-  const results = buildInlineResults(miniAppUrl, inlineQuery.query || '')
-  await tgCall(token, 'answerInlineQuery', {
+  const query = inlineQuery.query || ''
+  const payload = {
     inline_query_id: inlineQuery.id,
-    results,
     cache_time: 0,
-    is_personal: true,
-  })
+    is_personal: false,
+    switch_pm_text: 'Открыть бота',
+    switch_pm_parameter: 'inline',
+  }
+
+  try {
+    payload.results = buildInlineResults(miniAppUrl, query, botUsername)
+    await tgCall(token, 'answerInlineQuery', payload)
+  } catch (e) {
+    console.error('answerInlineQuery primary failed:', e.message)
+    try {
+      payload.results = buildFallbackResults(miniAppUrl, query)
+      await tgCall(token, 'answerInlineQuery', payload)
+    } catch (e2) {
+      console.error('answerInlineQuery fallback failed:', e2.message)
+    }
+  }
 }
 
 export async function handleTelegramUpdate(update, env) {
@@ -87,7 +123,7 @@ export async function handleTelegramUpdate(update, env) {
 
     await tgCall(token, 'sendMessage', {
       chat_id: update.message.chat.id,
-      text: '🍰 Привет! Напишите @бот mood в любом чате или нажмите кнопку ниже.',
+      text: '🍰 Привет! Напишите @SM4LVBot mood в любом чате или нажмите кнопку ниже.',
       reply_markup: {
         inline_keyboard: [
           [{ text: '✨ Открыть приложение', web_app: { url: miniAppUrl } }],
