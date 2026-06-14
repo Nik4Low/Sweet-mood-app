@@ -15,25 +15,35 @@
     </div>
     <div class="card__orders">
       <button
+        v-if="sweet.shopUrl"
         type="button"
-        class="btn btn--order"
-        @click="handleOrder"
+        class="btn btn--order btn--order-link"
+        @click="handleCustom"
       >
-        🛒 {{ sweet.shopUrl ? 'Купить' : 'Яндекс Еда' }}
+        🔗 Перейти по ссылке
       </button>
-      <button
-        type="button"
-        class="btn btn--order btn--order-alt"
-        @click="handleLavka"
-      >
-        🛒 Лавка
-      </button>
+      <div class="card__orders-row">
+        <button
+          type="button"
+          class="btn btn--order"
+          @click="handleEda"
+        >
+          🛒 Яндекс Еда
+        </button>
+        <button
+          type="button"
+          class="btn btn--order btn--order-alt"
+          @click="handleLavka"
+        >
+          🛒 Лавка
+        </button>
+      </div>
     </div>
   </article>
 </template>
 
 <script>
-import { openShopLink, openLavkaLink } from '../composables/useOpenShop.js'
+import { openCustomShopLink, openEdaLink, openLavkaLink } from '../composables/useOpenShop.js'
 
 export default {
   name: 'RecommendationCard',
@@ -43,15 +53,19 @@ export default {
     matchedTags: { type: Set, default: () => new Set() },
   },
   setup(props) {
-    function handleOrder() {
-      openShopLink(props.sweet)
+    function handleCustom() {
+      openCustomShopLink(props.sweet)
+    }
+
+    function handleEda() {
+      openEdaLink(props.sweet)
     }
 
     function handleLavka() {
       openLavkaLink(props.sweet)
     }
 
-    return { handleOrder, handleLavka }
+    return { handleCustom, handleEda, handleLavka }
   },
 }
 </script>
@@ -66,8 +80,14 @@ export default {
 
 .card__orders {
   display: flex;
+  flex-direction: column;
   gap: 8px;
   margin-top: 12px;
+}
+
+.card__orders-row {
+  display: flex;
+  gap: 8px;
 }
 
 .btn--order {
@@ -80,6 +100,11 @@ export default {
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.btn--order-link {
+  flex: none;
+  width: 100%;
 }
 
 .btn--order-alt {

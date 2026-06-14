@@ -35,6 +35,15 @@ export function openShopLink(sweet) {
   openUrl(resolveShopUrl(sweet))
 }
 
+export function openCustomShopLink(sweet) {
+  const url = normalizeShopUrl(sweet.shopUrl)
+  if (url) openUrl(url)
+}
+
+export function openEdaLink(sweet) {
+  openUrl(buildYandexEdaSearchUrl(sweet.name))
+}
+
 export function openLavkaLink(sweet) {
   openUrl(buildYandexLavkaSearchUrl(sweet.name))
 }
