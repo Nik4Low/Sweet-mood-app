@@ -1,14 +1,16 @@
 import {
   buildMoodPrompt,
+  buildTagsPrompt,
   extractGroqContent,
   parseMoodResponse,
+  parseTagsResponse,
 } from '../services/groqPrompt.js'
 
 const WORKER_URL = import.meta.env.VITE_WORKER_URL
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY
 const GROQ_MODEL = 'llama-3.1-8b-instant'
 
-async function callGroqDirect(userText, availableTags, retry = true) {
+async function callGroqChat(prompt, maxTokens = 200, retry = true) {
   if (!GROQ_API_KEY) {
     throw new Error('Не задан VITE_GROQ_API_KEY')
   }
@@ -21,9 +23,9 @@ async function callGroqDirect(userText, availableTags, retry = true) {
     },
     body: JSON.stringify({
       model: GROQ_MODEL,
-      messages: [{ role: 'user', content: buildMoodPrompt(userText, availableTags) }],
+      messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
-      max_tokens: 200,
+      max_tokens: maxTokens,
       response_format: { type: 'json_object' },
     }),
   })
@@ -32,43 +34,64 @@ async function callGroqDirect(userText, availableTags, retry = true) {
 
   if (response.status === 429 && retry) {
     await new Promise((r) => setTimeout(r, 2000))
-    return callGroqDirect(userText, availableTags, false)
+    return callGroqChat(prompt, maxTokens, false)
   }
 
   if (!response.ok) {
     throw new Error(data?.error?.message || `Groq error (${response.status})`)
   }
 
-  return parseMoodResponse(extractGroqContent(data))
+  return data
 }
 
-async function callGroqViaWorker(userText, availableTags, retry = true) {
-  const response = await fetch(WORKER_URL, {
+async function callWorker(endpoint, body, retry = true) {
+  const base = WORKER_URL?.replace(/\/mood\/?$/, '') || WORKER_URL
+  const url = endpoint === 'mood'
+    ? (WORKER_URL || `${base}/mood`)
+    : `${base}/${endpoint}`
+
+  const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userText, availableTags }),
+    body: JSON.stringify(body),
   })
 
   const data = await response.json()
 
   if (response.status === 429 && retry) {
     await new Promise((r) => setTimeout(r, 2000))
-    return callGroqViaWorker(userText, availableTags, false)
+    return callWorker(endpoint, body, false)
   }
 
   if (!response.ok) {
     throw new Error(data?.error || `Ошибка сервера (${response.status})`)
   }
 
-  return parseMoodResponse(extractGroqContent(data))
+  return data
 }
 
 async function fetchMood(userText, availableTags) {
   if (WORKER_URL) {
-    return callGroqViaWorker(userText, availableTags)
+    const data = await callWorker('mood', { userText, availableTags })
+    return parseMoodResponse(extractGroqContent(data))
   }
   if (GROQ_API_KEY) {
-    return callGroqDirect(userText, availableTags)
+    const data = await callGroqChat(buildMoodPrompt(userText, availableTags))
+    return parseMoodResponse(extractGroqContent(data))
+  }
+  throw new Error('Не задан VITE_GROQ_API_KEY или VITE_WORKER_URL')
+}
+
+async function fetchSuggestedTags(name, description, vocabulary) {
+  const payload = { name, description, vocabulary }
+
+  if (WORKER_URL) {
+    const data = await callWorker('tags', payload)
+    return parseTagsResponse(extractGroqContent(data))
+  }
+  if (GROQ_API_KEY) {
+    const data = await callGroqChat(buildTagsPrompt(name, description, vocabulary), 150)
+    return parseTagsResponse(extractGroqContent(data))
   }
   throw new Error('Не задан VITE_GROQ_API_KEY или VITE_WORKER_URL')
 }
@@ -78,5 +101,12 @@ export function useGroq() {
     return fetchMood(userText.trim(), availableTags)
   }
 
-  return { analyzeMood }
+  async function suggestTags(name, description, vocabulary) {
+    if (!name?.trim()) {
+      throw new Error('Укажите название сладости')
+    }
+    return fetchSuggestedTags(name.trim(), description?.trim() || '', vocabulary)
+  }
+
+  return { analyzeMood, suggestTags }
 }

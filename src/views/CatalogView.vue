@@ -22,6 +22,7 @@
       <SweetForm
         v-if="showForm"
         :initial="editingSweet"
+        :existing-tags="catalogTags"
         @save="handleSave"
         @cancel="closeForm"
       />
@@ -36,9 +37,10 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import SweetForm from '../components/SweetForm.vue'
 import SweetList from '../components/SweetList.vue'
+import { collectAllTags } from '../composables/useRecommend.js'
 
 export default {
   name: 'CatalogView',
@@ -51,6 +53,7 @@ export default {
   setup(props, { emit }) {
     const showForm = ref(false)
     const editingSweet = ref(null)
+    const catalogTags = computed(() => collectAllTags(props.sweets))
 
     function openAdd() {
       editingSweet.value = null
@@ -85,6 +88,7 @@ export default {
     return {
       showForm,
       editingSweet,
+      catalogTags,
       openAdd,
       openEdit,
       closeForm,

@@ -206,6 +206,41 @@ body {
   color: var(--tg-hint);
 }
 
+.field__hint--ai {
+  color: var(--tg-button);
+}
+
+.field__error {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: #ff6b6b;
+}
+
+.field__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.field__row .field__label {
+  margin-bottom: 0;
+}
+
+.btn--compact {
+  padding: 4px 10px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.spinner--sm {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
 .card {
   background: var(--tg-secondary);
   border-radius: var(--radius);
