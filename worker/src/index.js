@@ -97,7 +97,7 @@ export default {
       const result = await callGroq(
         env,
         buildTagsPrompt(name.trim(), description || '', vocab),
-        150
+        280
       )
       if (result.error) return jsonResponse({ error: result.error }, result.status)
       return jsonResponse(result.data)

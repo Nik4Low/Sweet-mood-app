@@ -19,6 +19,14 @@
       :rows="2"
     />
 
+    <FormField
+      id="sweet-shop-url"
+      v-model="form.shopUrl"
+      label="Ссылка на товар"
+      placeholder="https://eda.yandex.ru/..."
+      hint="Яндекс Еда или другой магазин. Если пусто — поиск по названию"
+    />
+
     <button
       type="button"
       class="btn btn--secondary btn--suggest"
@@ -57,7 +65,7 @@
 <script>
 import { reactive, ref, watch } from 'vue'
 import FormField from './FormField.vue'
-import { createSweet, tagsToInput, parseTagsInput } from '../models/sweet.js'
+import { createSweet, tagsToInput, parseTagsInput, normalizeShopUrlField } from '../models/sweet.js'
 import { mergeTagVocabulary } from '../models/tags.js'
 import { useGroq } from '../composables/useGroq.js'
 
@@ -76,6 +84,7 @@ export default {
     const form = reactive({
       name: props.initial?.name ?? '',
       description: props.initial?.description ?? '',
+      shopUrl: props.initial?.shopUrl ?? '',
       tagsInput: props.initial ? tagsToInput(props.initial.tags) : '',
     })
 
@@ -89,6 +98,7 @@ export default {
         if (val) {
           form.name = val.name
           form.description = val.description
+          form.shopUrl = val.shopUrl ?? ''
           form.tagsInput = tagsToInput(val.tags)
           tagsHint.value = ''
           tagsError.value = ''
@@ -129,17 +139,20 @@ export default {
     async function submit() {
       try {
         const tags = await ensureTags()
+        const shopUrl = normalizeShopUrlField(form.shopUrl)
         if (props.initial) {
           emit('save', {
             ...props.initial,
             name: form.name.trim(),
             description: form.description.trim(),
+            shopUrl,
             tags,
           })
         } else {
           emit('save', createSweet({
             name: form.name,
             description: form.description,
+            shopUrl,
             tags,
           }))
         }

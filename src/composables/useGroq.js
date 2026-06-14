@@ -90,7 +90,7 @@ async function fetchSuggestedTags(name, description, vocabulary) {
     return parseTagsResponse(extractGroqContent(data))
   }
   if (GROQ_API_KEY) {
-    const data = await callGroqChat(buildTagsPrompt(name, description, vocabulary), 150)
+    const data = await callGroqChat(buildTagsPrompt(name, description, vocabulary), 280)
     return parseTagsResponse(extractGroqContent(data))
   }
   throw new Error('Не задан VITE_GROQ_API_KEY или VITE_WORKER_URL')

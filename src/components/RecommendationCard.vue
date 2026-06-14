@@ -13,16 +13,31 @@
         {{ tag }}
       </span>
     </div>
+    <button
+      type="button"
+      class="btn btn--order"
+      @click="handleOrder"
+    >
+      🛒 {{ sweet.shopUrl ? 'Перейти к покупке' : 'Найти в Яндекс Еде' }}
+    </button>
   </article>
 </template>
 
 <script>
+import { openShopLink } from '../composables/useOpenShop.js'
+
 export default {
   name: 'RecommendationCard',
   props: {
     sweet: { type: Object, required: true },
     rank: { type: Number, required: true },
     matchedTags: { type: Set, default: () => new Set() },
+  },
+  setup(props) {
+    function handleOrder() {
+      openShopLink(props.sweet)
+    }
+    return { handleOrder }
   },
 }
 </script>
@@ -33,5 +48,22 @@ export default {
   font-weight: 700;
   color: var(--tg-button);
   margin-bottom: 4px;
+}
+
+.btn--order {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: rgba(108, 92, 231, 0.15);
+  color: var(--tg-button);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn--order:active {
+  opacity: 0.85;
 }
 </style>
