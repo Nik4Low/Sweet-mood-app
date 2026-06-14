@@ -53,6 +53,7 @@ import ResultView from './views/ResultView.vue'
 import { useCloudStorage } from './composables/useCloudStorage.js'
 import { useGroq } from './composables/useGroq.js'
 import { collectAllTags, recommendSweets } from './composables/useRecommend.js'
+import { readInlineMoodText } from './composables/useInlineLaunch.js'
 
 const tabs = [
   { id: 'catalog', label: 'Сладости', icon: '🍰' },
@@ -131,11 +132,18 @@ export default {
       activeTab.value = 'mood'
     }
 
-    onMounted(() => {
+    onMounted(async () => {
       WebApp.ready()
       WebApp.expand()
       applyTheme()
-      refreshCatalog()
+
+      const inlineMood = readInlineMoodText()
+      if (inlineMood) {
+        moodText.value = inlineMood
+        activeTab.value = 'mood'
+      }
+
+      await refreshCatalog()
     })
 
     return {

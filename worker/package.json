@@ -1,5 +1,8 @@
 {
   "name": "sweet-mood-worker",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "webhook": "node scripts/set-webhook.mjs"
+  }
 }

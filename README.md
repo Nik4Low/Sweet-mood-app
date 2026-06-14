@@ -65,6 +65,67 @@ wrangler deploy
 
 Тогда в Secrets Actions добавьте Variable `VITE_WORKER_URL` вместо ключа Groq.
 
+## Inline-режим (@бот в любом чате)
+
+Пишите в **любом чате** (с другом, в группе):
+
+```text
+@SM4LVBot устал, хочу сладкое
+```
+
+или просто:
+
+```text
+@SM4LVBot mood
+```
+
+Выберите карточку → в чат отправится сообщение с кнопкой **«Открыть приложение»**.
+
+### Настройка (один раз)
+
+1. **BotFather** → ваш бот → `/setinline` → включить inline  
+   Placeholder: `mood, устал, сладость...`
+
+2. **Cloudflare Worker** — секреты и деплoy:
+
+```powershell
+cd worker
+wrangler secret put TELEGRAM_BOT_TOKEN
+wrangler secret put GROQ_API_KEY
+wrangler deploy
+```
+
+3. **Webhook** (подставьте URL после deploy):
+
+```powershell
+$env:TELEGRAM_BOT_TOKEN="ваш_токен"
+node scripts/set-webhook.mjs https://sweet-mood-proxy.<account>.workers.dev/telegram-webhook
+```
+
+4. Проверка: в любом чате `@ВАШ_БОТ test` — должна появиться карточка.
+
+Текст после `@бота` передаётся в Mini App на вкладку «Настроение».
+
+#### Вариант A: Cloudflare Worker (если email подтверждён)
+
+См. команды выше (`wrangler deploy`).
+
+#### Вариант B: Vercel (если Cloudflare не пускает)
+
+1. Зарегистрируйтесь на [vercel.com](https://vercel.com), импортируйте репозиторий `Sweet-mood-app`
+2. **Settings → Environment Variables**:
+   - `TELEGRAM_BOT_TOKEN` — токен бота
+   - `MINI_APP_URL` — `https://nik4low.github.io/Sweet-mood-app/`
+3. Deploy → URL будет `https://your-project.vercel.app`
+4. Webhook:
+
+```powershell
+$env:TELEGRAM_BOT_TOKEN="ваш_токен"
+node worker/scripts/set-webhook.mjs https://your-project.vercel.app/api/telegram-webhook
+```
+
+---
+
 ### 4. Telegram Bot (BotFather)
 
 1. Откройте [@BotFather](https://t.me/BotFather)
@@ -78,7 +139,7 @@ wrangler deploy
 
 ```
 src/           — Vue Mini App
-worker/        — Cloudflare Worker (Groq proxy)
+worker/        — Cloudflare Worker (Groq + Telegram inline webhook)
 .github/       — GitHub Actions deploy
 ```
 
@@ -94,7 +155,8 @@ worker/        — Cloudflare Worker (Groq proxy)
 |--------------|------------|----------|
 | `.env` | `VITE_WORKER_URL` | URL Worker endpoint `/mood` |
 | Cloudflare Secret | `GROQ_API_KEY` | Ключ Groq API |
-| GitHub Actions Variable | `VITE_WORKER_URL` | То же для CI-сборки |
+| Cloudflare Secret | `TELEGRAM_BOT_TOKEN` | Токен бота для inline webhook |
+| Cloudflare Var | `MINI_APP_URL` | URL Mini App (в wrangler.toml) |
 
 ## Локальная проверка Worker
 
@@ -112,6 +174,7 @@ wrangler dev
 | 429 от Groq | Подождите минуту (free tier limit) |
 | Пустой каталог после перезапуска | Открывайте через Telegram (CloudStorage) |
 | Mini App не открывается | URL должен быть HTTPS; проверьте Menu Button в BotFather |
+| Inline @бот не отвечает | `/setinline` в BotFather + webhook + `TELEGRAM_BOT_TOKEN` в Worker |
 
 ## Лицензия
 
