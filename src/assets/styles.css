@@ -216,23 +216,19 @@ body {
   color: #ff6b6b;
 }
 
-.field__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 6px;
+.btn--suggest {
+  width: 100%;
+  margin-bottom: 16px;
 }
 
-.field__row .field__label {
-  margin-bottom: 0;
-}
-
-.btn--compact {
-  padding: 4px 10px;
-  font-size: 0.8125rem;
-  white-space: nowrap;
-  flex-shrink: 0;
+.catalog-hint {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  color: var(--tg-button);
+  background: rgba(108, 92, 231, 0.12);
+  border: 1px solid rgba(108, 92, 231, 0.25);
 }
 
 .spinner--sm {

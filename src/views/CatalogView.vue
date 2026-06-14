@@ -19,6 +19,10 @@
         </button>
       </div>
 
+      <p v-if="!showForm && !sweets.length" class="catalog-hint">
+        Нажмите «+ Добавить» — теги настроения подберутся автоматически
+      </p>
+
       <SweetForm
         v-if="showForm"
         :initial="editingSweet"

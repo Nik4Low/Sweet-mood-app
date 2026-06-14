@@ -19,28 +19,27 @@
       :rows="2"
     />
 
+    <button
+      type="button"
+      class="btn btn--secondary btn--suggest"
+      :disabled="suggesting || !form.name.trim()"
+      @click="suggestTags"
+    >
+      <span v-if="suggesting" class="spinner spinner--sm" />
+      <span>{{ suggesting ? 'Подбираем теги...' : '✨ Подобрать теги автоматически' }}</span>
+    </button>
+
     <div class="field">
-      <div class="field__row">
-        <label class="field__label" for="sweet-tags">Теги настроения</label>
-        <button
-          type="button"
-          class="btn btn--ghost btn--compact"
-          :disabled="suggesting || !form.name.trim()"
-          @click="suggestTags"
-        >
-          <span v-if="suggesting" class="spinner spinner--sm" />
-          <span>{{ suggesting ? 'Подбираем...' : '✨ Подобрать теги' }}</span>
-        </button>
-      </div>
+      <label class="field__label" for="sweet-tags">Теги настроения</label>
       <input
         id="sweet-tags"
         v-model="form.tagsInput"
         class="field__input"
         type="text"
-        placeholder="нажмите «Подобрать теги» или введите вручную"
+        placeholder="появятся после подбора или введите вручную"
       />
       <p v-if="tagsHint" class="field__hint field__hint--ai">{{ tagsHint }}</p>
-      <p v-else class="field__hint">Теги связывают сладость с настроением — можно подобрать автоматически</p>
+      <p v-else class="field__hint">Можно не заполнять — подберём при сохранении, если поле пустое</p>
       <p v-if="tagsError" class="field__error">{{ tagsError }}</p>
     </div>
 
