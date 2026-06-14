@@ -52,7 +52,7 @@
     </div>
 
     <div class="form-actions">
-      <button v-if="editing" type="button" class="btn btn--secondary" @click="$emit('cancel')">
+      <button type="button" class="btn btn--secondary" @click="$emit('cancel')">
         Отмена
       </button>
       <button type="submit" class="btn btn--primary" :disabled="!form.name.trim() || suggesting">
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, computed } from 'vue'
 import FormField from './FormField.vue'
 import { createSweet, tagsToInput, parseTagsInput, normalizeShopUrlField } from '../models/sweet.js'
 import { mergeTagVocabulary } from '../models/tags.js'
@@ -78,33 +78,30 @@ export default {
   },
   emits: ['save', 'cancel'],
   setup(props, { emit }) {
-    const editing = Boolean(props.initial)
+    const editing = computed(() => Boolean(props.initial))
     const { suggestTags: fetchTags } = useGroq()
 
     const form = reactive({
-      name: props.initial?.name ?? '',
-      description: props.initial?.description ?? '',
-      shopUrl: props.initial?.shopUrl ?? '',
-      tagsInput: props.initial ? tagsToInput(props.initial.tags) : '',
+      name: '',
+      description: '',
+      shopUrl: '',
+      tagsInput: '',
     })
 
     const suggesting = ref(false)
     const tagsHint = ref('')
     const tagsError = ref('')
 
-    watch(
-      () => props.initial,
-      (val) => {
-        if (val) {
-          form.name = val.name
-          form.description = val.description
-          form.shopUrl = val.shopUrl ?? ''
-          form.tagsInput = tagsToInput(val.tags)
-          tagsHint.value = ''
-          tagsError.value = ''
-        }
-      }
-    )
+    function resetForm(val) {
+      form.name = val?.name ?? ''
+      form.description = val?.description ?? ''
+      form.shopUrl = val?.shopUrl ?? ''
+      form.tagsInput = val ? tagsToInput(val.tags) : ''
+      tagsHint.value = ''
+      tagsError.value = ''
+    }
+
+    watch(() => props.initial, resetForm, { immediate: true })
 
     watch(
       () => form.tagsInput,
@@ -140,7 +137,7 @@ export default {
       try {
         const tags = await ensureTags()
         const shopUrl = normalizeShopUrlField(form.shopUrl)
-        if (props.initial) {
+        if (editing.value) {
           emit('save', {
             ...props.initial,
             name: form.name.trim(),

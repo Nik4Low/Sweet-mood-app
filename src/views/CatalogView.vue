@@ -9,7 +9,7 @@
       <div class="section-header">
         <h2 class="section-header__title">Мои сладости ({{ sweets.length }})</h2>
         <button
-          v-if="!showForm"
+          v-if="!formMode"
           type="button"
           class="btn btn--primary"
           style="width: auto; padding: 8px 16px; font-size: 0.875rem"
@@ -19,13 +19,13 @@
         </button>
       </div>
 
-      <p v-if="!showForm && !sweets.length" class="catalog-hint">
+      <p v-if="!formMode && !sweets.length" class="catalog-hint">
         Нажмите «+ Добавить» — теги настроения подберутся автоматически
       </p>
 
       <SweetForm
-        v-if="showForm"
-        :initial="editingSweet"
+        v-if="formMode === 'add'"
+        key="add"
         :existing-tags="catalogTags"
         @save="handleSave"
         @cancel="closeForm"
@@ -33,8 +33,13 @@
 
       <SweetList
         :sweets="sweets"
+        :editing-id="editingId"
+        :catalog-tags="catalogTags"
+        :hide-empty="formMode === 'add'"
         @edit="openEdit"
         @remove="handleRemove"
+        @save="handleSave"
+        @cancel="closeForm"
       />
     </template>
   </section>
@@ -55,43 +60,44 @@ export default {
   },
   emits: ['update'],
   setup(props, { emit }) {
-    const showForm = ref(false)
-    const editingSweet = ref(null)
+    /** null — форма закрыта, 'add' — новая сладость, иначе id редактируемой */
+    const formMode = ref(null)
     const catalogTags = computed(() => collectAllTags(props.sweets))
+    const editingId = computed(() =>
+      formMode.value && formMode.value !== 'add' ? formMode.value : null
+    )
 
     function openAdd() {
-      editingSweet.value = null
-      showForm.value = true
+      formMode.value = 'add'
     }
 
     function openEdit(sweet) {
-      editingSweet.value = sweet
-      showForm.value = true
+      formMode.value = sweet.id
     }
 
     function closeForm() {
-      showForm.value = false
-      editingSweet.value = null
+      formMode.value = null
     }
 
     function handleSave(sweet) {
       let next
-      if (editingSweet.value) {
-        next = props.sweets.map((s) => (s.id === sweet.id ? sweet : s))
-      } else {
+      if (formMode.value === 'add') {
         next = [...props.sweets, sweet]
+      } else {
+        next = props.sweets.map((s) => (s.id === sweet.id ? sweet : s))
       }
       emit('update', next)
       closeForm()
     }
 
     function handleRemove(id) {
+      if (formMode.value === id) closeForm()
       emit('update', props.sweets.filter((s) => s.id !== id))
     }
 
     return {
-      showForm,
-      editingSweet,
+      formMode,
+      editingId,
       catalogTags,
       openAdd,
       openEdit,
