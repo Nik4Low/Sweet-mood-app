@@ -38,15 +38,32 @@ wrangler deploy
 VITE_WORKER_URL=https://sweet-mood-proxy.<account>.workers.dev/mood
 ```
 
-### 3. GitHub Pages
+## Деплой на GitHub Pages (автоматически)
 
-1. Создайте репозиторий и запушьте код.
-2. **Settings → Pages → Build and deployment → Source: GitHub Actions**
-3. **Settings → Secrets and variables → Actions → Variables**:
-   - `VITE_WORKER_URL` = URL Worker из шага 2
-4. Push в `main` — workflow соберёт и задеплоит сайт.
+После push в `main` срабатывает GitHub Actions. **Один раз** добавьте секрет:
 
-URL приложения: `https://<username>.github.io/<repo-name>/`
+1. [Sweet-mood-app → Settings → Secrets → Actions](https://github.com/Nik4Low/Sweet-mood-app/settings/secrets/actions)
+2. **New repository secret**
+   - Name: `VITE_GROQ_API_KEY`
+   - Value: ваш ключ с [console.groq.com](https://console.groq.com)
+3. [Settings → Pages](https://github.com/Nik4Low/Sweet-mood-app/settings/pages) → **Source: GitHub Actions**
+4. **Actions** → workflow **Deploy to GitHub Pages** → **Run workflow**
+
+URL приложения: **https://nik4low.github.io/Sweet-mood-app/**
+
+> GitHub блокирует push, если ключ попадает в git напрямую. Секрет Actions безопаснее: ключ вшивается только при сборке на серверах GitHub.
+
+### Cloudflare Worker (опционально)
+
+Если подтвердите email в Cloudflare, можно спрятать ключ в Worker:
+
+```powershell
+cd worker
+wrangler secret put GROQ_API_KEY
+wrangler deploy
+```
+
+Тогда в Secrets Actions добавьте Variable `VITE_WORKER_URL` вместо ключа Groq.
 
 ### 4. Telegram Bot (BotFather)
 
