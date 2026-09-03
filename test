@@ -19,34 +19,7 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=1943053 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <meta name="llm_access" content="No web-public or LLM access is available on this Zulip server.">
-
-
-        
-
-        
-
-        
-            <script src="https://zulip.team.lan/static/webpack-bundles/8050.5a6eab020aeb7e241eca.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <link href="https://zulip.team.lan/static/webpack-bundles/6215.3aee1e2829fa4c295ead.css" rel="stylesheet" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d">
-                <script src="https://zulip.team.lan/static/webpack-bundles/6215.b6341c1da50665d7cf15.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <script src="https://zulip.team.lan/static/webpack-bundles/5609.0f8f16426292bf6898e6.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <script src="https://zulip.team.lan/static/webpack-bundles/7820.868203aba2a3f30382bf.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <script src="https://zulip.team.lan/static/webpack-bundles/1955.2a1357ab5de535469c57.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <script src="https://zulip.team.lan/static/webpack-bundles/1670.0963a7d39fadd579768e.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <script src="https://zulip.team.lan/static/webpack-bundles/420.288148b70ab4f3988e8c.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <script src="https://zulip.team.lan/static/webpack-bundles/4491.97b85a9811e52f7a59bd.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <script src="https://zulip.team.lan/static/webpack-bundles/8626.02ea5aafd07f3ec0f1cf.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <script src="https://zulip.team.lan/static/webpack-bundles/4036.812fedda9a99929a355f.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <link href="https://zulip.team.lan/static/webpack-bundles/8413.f5da02d1c6ef1ab7a335.css" rel="stylesheet" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d">
-                <script src="https://zulip.team.lan/static/webpack-bundles/8413.55cc9ce65475198524f9.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <link href="https://zulip.team.lan/static/webpack-bundles/9308.2fd1b3907fedfb8a1203.css" rel="stylesheet" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d">
-                <script src="https://zulip.team.lan/static/webpack-bundles/6829.05ff267045e294bef902.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                <link href="https://zulip.team.lan/static/webpack-bundles/app.3eaae36663e848ef1a81.css" rel="stylesheet" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d">
-                <script src="https://zulip.team.lan/static/webpack-bundles/app.560f7c2cbda07d532282.js" defer="" crossorigin="anonymous" nonce="7ca5095348b6ac1af924f139e0284a715026b60d0865224d"></script>
-                
-        
-
-        
+     
 <link rel="dns-prefetch" href="https://secure.gravatar.com">
 <meta name="mobile-web-app-capable" content="yes">
 <link href="https://zulip.team.lan/static/images/logo/apple-touch-icon-precomposed.png" rel="apple-touch-icon-precomposed">
