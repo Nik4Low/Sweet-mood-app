@@ -1,0 +1,127 @@
+/* ===== АНИМАЦИЯ БОКОВЫХ ПАНЕЛЕЙ ===== */
+
+/* 1. Плавное изменение ширины колонок (основные контейнеры) */
+.column-left,
+.column-right {
+    transition: flex 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                flex-basis 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.25s ease;
+    overflow: hidden; /* предотвращает вылезание содержимого */
+}
+
+.column-middle {
+    transition: flex 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                flex-grow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                flex-shrink 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 2. Сворачивание левой панели (класс на body) */
+body.left-sidebar-collapsed .column-left {
+    flex: 0 0 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    opacity: 0;
+}
+
+/* 3. Сворачивание правой панели (класс на body) */
+body.right-sidebar-collapsed .column-right {
+    flex: 0 0 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    opacity: 0;
+}
+
+/* 4. Альтернативное сворачивание через классы на самих панелях */
+.left-sidebar.collapsed,
+.right-sidebar.collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    overflow: hidden !important;
+    opacity: 0;
+    transition: width 0.35s ease, opacity 0.25s ease;
+}
+
+/* 5. Если панели сжимаются до иконок (узкий режим) */
+.left-sidebar.icons-only,
+.right-sidebar.icons-only {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    transition: width 0.35s ease;
+}
+
+/* 6. Плавное скрытие содержимого внутри свёрнутых панелей */
+.left-sidebar.collapsed *,
+.right-sidebar.collapsed *,
+body.left-sidebar-collapsed .column-left *,
+body.right-sidebar-collapsed .column-right * {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* 7. Анимация кнопки сворачивания (гамбургер) */
+.left-sidebar-toggle-button .zulip-icon-panel-left-dashed,
+.left-sidebar-toggle-button .zulip-icon-panel-left {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+body.left-sidebar-collapsed .left-sidebar-toggle-button .zulip-icon-panel-left-dashed {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+body.left-sidebar-collapsed .left-sidebar-toggle-button .zulip-icon-panel-left {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+/* Для правой панели, если есть аналогичная кнопка */
+body.right-sidebar-collapsed .right-sidebar-toggle-button .zulip-icon-panel-right-dashed {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+body.right-sidebar-collapsed .right-sidebar-toggle-button .zulip-icon-panel-right {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+/* 8. Плавное изменение ширины контейнера .app-main, если используется grid */
+.app-main {
+    transition: grid-template-columns 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 9. Для случая, когда панели скрываются через visibility (zoom-in) */
+.left-sidebar.zoom-in #left_sidebar_scroll_container,
+.left-sidebar.zoom-in #left-sidebar-search {
+    transition: opacity 0.3s ease, visibility 0s 0.3s; /* задержка перед скрытием */
+}
+
+.left-sidebar.zoom-in #left_sidebar_scroll_container {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.left-sidebar.zoom-in #left-sidebar-search {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* 10. Дополнительная плавность для скрытия/показа модальных окон */
+#left-sidebar-modal {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+#left-sidebar.zoom-in-topics #left-sidebar-modal,
+#left-sidebar.zoom-in-conversations #left-sidebar-modal {
+    opacity: 1;
+    transform: translateY(0);
+}
