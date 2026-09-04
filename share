@@ -1,26 +1,39 @@
 /* ============================================================
-   ПЛАВНАЯ АНИМАЦИЯ ЛЕВОЙ ПАНЕЛИ (через трансформацию)
+   ПЛАВНАЯ АНИМАЦИЯ ЛЕВОЙ ПАНЕЛИ (только панель, не кнопка)
    ============================================================ */
 
-/* Анимируем трансформацию и прозрачность */
+/* Анимируем все свойства, которые могут меняться при скрытии */
 .dark-theme #left-sidebar-container {
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    will-change: transform, opacity;
+    transition: width 0.4s ease-in-out,
+                min-width 0.4s ease-in-out,
+                max-width 0.4s ease-in-out,
+                flex 0.4s ease-in-out,
+                flex-basis 0.4s ease-in-out,
+                transform 0.4s ease-in-out,
+                opacity 0.4s ease-in-out !important;
+    will-change: transform, opacity, width;
 }
 
-/* Скрытое состояние — панель уезжает влево и становится прозрачной */
+/* Состояние скрытой панели (когда body имеет класс hide-left-sidebar) */
 .dark-theme body.hide-left-sidebar #left-sidebar-container {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    flex: 0 0 0 !important;
+    flex-basis: 0 !important;
     transform: translateX(-100%) !important;
     opacity: 0 !important;
-    /* Убираем возможный overflow, чтобы скрыть содержимое */
     overflow: hidden !important;
-    /* Убираем pointer-events, чтобы нельзя было кликнуть по скрытой панели */
     pointer-events: none !important;
 }
 
-/* Видимое состояние — панель на месте */
+/* Состояние видимой панели */
 .dark-theme body:not(.hide-left-sidebar) #left-sidebar-container {
+    width: var(--left-sidebar-width) !important;
+    min-width: var(--left-sidebar-width) !important;
+    max-width: var(--left-sidebar-max-width) !important;
+    flex: 0 0 auto !important;
+    flex-basis: var(--left-sidebar-width) !important;
     transform: translateX(0) !important;
     opacity: 1 !important;
     overflow: visible !important;
