@@ -1,76 +1,28 @@
 /* ============================================================
-   ПЛАВНАЯ АНИМАЦИЯ СВОРАЧИВАНИЯ ЛЕВОЙ ПАНЕЛИ
+   ПЛАВНАЯ АНИМАЦИЯ ЛЕВОЙ ПАНЕЛИ (через трансформацию)
    ============================================================ */
 
-/* Анимируем все свойства, которые могут меняться при скрытии/показе */
-.dark-theme .column-left {
-    transition: width 0.35s ease-in-out,
-                min-width 0.35s ease-in-out,
-                max-width 0.35s ease-in-out,
-                flex 0.35s ease-in-out,
-                flex-basis 0.35s ease-in-out,
-                margin 0.35s ease-in-out,
-                padding 0.35s ease-in-out,
-                opacity 0.35s ease-in-out !important;
+/* Анимируем трансформацию и прозрачность */
+.dark-theme #left-sidebar-container {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    will-change: transform, opacity;
 }
 
-/* Состояние скрытой панели */
-.dark-theme body.hide-left-sidebar .column-left {
-    width: 0 !important;
-    min-width: 0 !important;
-    max-width: 0 !important;
-    flex: 0 0 0 !important;
-    flex-basis: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+/* Скрытое состояние — панель уезжает влево и становится прозрачной */
+.dark-theme body.hide-left-sidebar #left-sidebar-container {
+    transform: translateX(-100%) !important;
     opacity: 0 !important;
-    overflow: hidden !important; /* скрываем содержимое, но анимация ширины всё равно будет */
-}
-
-/* Состояние видимой панели (используем переменные, которые вы задали) */
-.dark-theme body:not(.hide-left-sidebar) .column-left {
-    width: var(--left-sidebar-width) !important;
-    min-width: var(--left-sidebar-width) !important;
-    max-width: var(--left-sidebar-max-width) !important;
-    flex: 0 0 auto !important;
-    flex-basis: var(--left-sidebar-width) !important;
-    opacity: 1 !important;
-    overflow: visible !important;
-}
-
-/* ============================================================
-   ПЛАВНАЯ АНИМАЦИЯ ПРАВОЙ ПАНЕЛИ (если нужно)
-   ============================================================ */
-
-.dark-theme .column-right {
-    transition: width 0.35s ease-in-out,
-                min-width 0.35s ease-in-out,
-                max-width 0.35s ease-in-out,
-                flex 0.35s ease-in-out,
-                flex-basis 0.35s ease-in-out,
-                margin 0.35s ease-in-out,
-                padding 0.35s ease-in-out,
-                opacity 0.35s ease-in-out !important;
-}
-
-.dark-theme body.hide-right-sidebar .column-right {
-    width: 0 !important;
-    min-width: 0 !important;
-    max-width: 0 !important;
-    flex: 0 0 0 !important;
-    flex-basis: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    opacity: 0 !important;
+    /* Убираем возможный overflow, чтобы скрыть содержимое */
     overflow: hidden !important;
+    /* Убираем pointer-events, чтобы нельзя было кликнуть по скрытой панели */
+    pointer-events: none !important;
 }
 
-.dark-theme body:not(.hide-right-sidebar) .column-right {
-    width: var(--right-sidebar-width) !important;
-    min-width: var(--right-sidebar-width) !important;
-    max-width: var(--right-sidebar-max-width) !important;
-    flex: 0 0 auto !important;
-    flex-basis: var(--right-sidebar-width) !important;
+/* Видимое состояние — панель на месте */
+.dark-theme body:not(.hide-left-sidebar) #left-sidebar-container {
+    transform: translateX(0) !important;
     opacity: 1 !important;
     overflow: visible !important;
+    pointer-events: auto !important;
 }
