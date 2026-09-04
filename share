@@ -1,9 +1,9 @@
 /* ============================================================
-   ПЛАВНАЯ АНИМАЦИЯ ЛЕВОЙ ПАНЕЛИ (только панель, не кнопка)
+   АНИМАЦИЯ ЛЕВОЙ ПАНЕЛИ (на основе реального left-sidebar.css)
    ============================================================ */
 
 /* Анимируем все свойства, которые могут меняться при скрытии */
-.dark-theme #left-sidebar-container {
+#left-sidebar-container {
     transition: width 0.4s ease-in-out,
                 min-width 0.4s ease-in-out,
                 max-width 0.4s ease-in-out,
@@ -14,8 +14,8 @@
     will-change: transform, opacity, width;
 }
 
-/* Состояние скрытой панели (когда body имеет класс hide-left-sidebar) */
-.dark-theme body.hide-left-sidebar #left-sidebar-container {
+/* Когда панель скрыта (класс на body) */
+body.hide-left-sidebar #left-sidebar-container {
     width: 0 !important;
     min-width: 0 !important;
     max-width: 0 !important;
@@ -27,8 +27,8 @@
     pointer-events: none !important;
 }
 
-/* Состояние видимой панели */
-.dark-theme body:not(.hide-left-sidebar) #left-sidebar-container {
+/* Когда панель видна */
+body:not(.hide-left-sidebar) #left-sidebar-container {
     width: var(--left-sidebar-width) !important;
     min-width: var(--left-sidebar-width) !important;
     max-width: var(--left-sidebar-max-width) !important;
@@ -38,4 +38,21 @@
     opacity: 1 !important;
     overflow: visible !important;
     pointer-events: auto !important;
+}
+
+/* Также анимируем контейнер прокрутки внутри панели */
+#left_sidebar_scroll_container {
+    transition: width 0.4s ease-in-out,
+                opacity 0.4s ease-in-out !important;
+}
+
+body.hide-left-sidebar #left_sidebar_scroll_container {
+    width: 0 !important;
+    opacity: 0 !important;
+    overflow: hidden !important;
+}
+
+body:not(.hide-left-sidebar) #left_sidebar_scroll_container {
+    width: 100% !important;
+    opacity: 1 !important;
 }
